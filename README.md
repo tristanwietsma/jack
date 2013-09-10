@@ -1,7 +1,7 @@
 JackDB v0.01
 ============
 
-A Concurrent Key-Value Store
+A Concurrent key-value server in Go
 
 Supports GET, SET, DEL, PUB, and SUB
 
