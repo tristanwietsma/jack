@@ -25,9 +25,9 @@ Run
 Run Tests
 ---------
 
-To evaluate get and set:
+To evaluate get and set (with server running):
 
-    cd jackdb/tests
+    cd $GOPATH/src/github.com/tristanwietsma/jackdb/tests
     sh run-tests.sh
 
 This will run 50 clients for 200 commands. The time required will be displayed for each action. On my i7, I get the following:
