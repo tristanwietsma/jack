@@ -1,5 +1,5 @@
-JackDB
-======
+JackDB v0.1
+===========
 
 A Concurrent Key-Value Store
 
@@ -38,3 +38,13 @@ This will run 50 clients for 200 commands. The time required will be displayed f
 
 By comparison, the equivalent Redis benchmarks are around 0.12 for both get and set.
 
+Roadmap
+-------
+
+* Testing
+
+* More testing
+
+* Might run some tests
+
+* API
