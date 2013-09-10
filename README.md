@@ -1,4 +1,6 @@
-jackdb
+JackDB
 ======
 
-Concurrent key-value store
+A Concurrent Key-Value Store
+
+
