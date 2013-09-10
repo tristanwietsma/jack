@@ -1,5 +1,5 @@
-JackDB v0.1
-===========
+JackDB v0.01
+============
 
 A Concurrent Key-Value Store
 
