@@ -56,3 +56,7 @@ Roadmap
 * APIs (Go, Python, C...)
 
 * Server-side scripting...
+
+* Browse cat pictures on Reddit...
+
+* Version 0.1
