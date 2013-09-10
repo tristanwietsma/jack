@@ -3,6 +3,10 @@ JackDB v0.01
 
 A Concurrent Key-Value Store
 
+Supports GET, SET, DEL, PUB, and SUB. 
+
+279 lines.
+
 Requires
 --------
 
