@@ -42,6 +42,8 @@ This will run 50 clients for 200 commands. The time required will be displayed f
 
 For comparison, Redis benchmarks are around 0.12 seconds for both get and set on the same machine.
 
+I've also got examples of publish/subscribe in the testing folder. Publishing is a little different than some key-value stores: JackDB waits on a stream, rather than another publish command (as with Redis). This was a design decision that relates to using publish for streaming input over a dedicated connection (think high frequency sensors or, perhaps, tick data).
+
 Roadmap
 -------
 
