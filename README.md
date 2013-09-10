@@ -36,7 +36,7 @@ This will run 50 clients for 200 commands. The time required will be displayed f
     .038331616
     .047540910
 
-By comparison, the equivalent Redis benchmarks are around 0.12 for both get and set.
+By comparison, the equivalent Redis benchmarks are around 0.12 (units = seconds) for both get and set.
 
 Roadmap
 -------
