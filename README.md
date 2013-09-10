@@ -12,19 +12,14 @@ Requires
 Install
 -------
 
-If you have set your GOPATH:
+Assuming you have set your GOPATH, use the go tool:
 
     go get github.com/tristanwietsma/jackdb
-
-If not:
-
-    git clone git@github.com:tristanwietsma/jackdb.git
-    cd jackdb
-    go build jackdb.go
 
 Run
 ---
 
+    cd $GOPATH/bin
     ./jackdb [--port <int>]
 
 Run Tests
