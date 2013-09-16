@@ -163,9 +163,10 @@ func HandleConnection(c net.Conn) {
 	fromAddr := c.RemoteAddr()
 	log.Printf("[%s] new connection\n", fromAddr)
 
+	buf := make([]byte, 1024)
+
 NEXTMESSAGE:
 
-	buf := make([]byte, 1024)
 	nb, err := c.Read(buf)
 	if err != nil {
 		return
