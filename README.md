@@ -1,11 +1,11 @@
+_Thanks for all the suggestions and early review! I've got a lot of work ahead of me._
+
 JackDB v0.01
 ============
 
 Concurrent key-value server in Go
 
 Supports GET, SET, DEL, PUB, and SUB
-
-279 lines
 
 Requires
 --------
