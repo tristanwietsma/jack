@@ -102,11 +102,11 @@ func (s *Store) updateSubscribers(key, value string) {
 	subs, ok := s.fetchSubscribers(key)
 	if ok {
 		for _, out := range subs {
-			defer func() {
+			defer func(o chan<- string) {
 				if r := recover(); r != nil {
-					s.unsubscribe(key, out)
+					s.unsubscribe(key, o)
 				}
-			}()
+			}(out)
 			out <- value
 		}
 	}
