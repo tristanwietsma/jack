@@ -44,19 +44,16 @@ For comparison, Redis benchmarks are around 0.12 seconds for both get and set on
 
 I've also got examples of publish/subscribe in the testing folder. Publishing is a little different than some key-value stores: JackDB waits on a stream, rather than another publish command (as with Redis). This was a design decision that relates to using publish for streaming input over a dedicated connection (think high frequency sensors or, perhaps, tick data).
 
-Roadmap
--------
+To Do
+-----
 
-* Testing
+* Design docs...
 
-* More testing
+* Protocol specification...
 
-* Might run some tests
+* Testing suite...
 
-* APIs (Go, Python, C...)
+* Some support for persistence (LOAD, SAVE) and administration...
 
-* Server-side scripting...
+* Improve storage system; I'm leaning towards dividing the map into buckets and hashing the keys...
 
-* Browse cat pictures on Reddit...
-
-* Version 0.1
