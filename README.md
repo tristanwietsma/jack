@@ -1,5 +1,7 @@
 _Thanks for all the suggestions and early review! I've got a lot of work ahead of me._
 
+_Update 9/25/2013: I've spun the backend storage structure into a separate project called [MetaStore](https://github.com/tristanwietsma/metastore). MetaStore is splits the maps into buckets for finer lock granularity; hashing with fnv. (Hat tip to bonekeeper)_
+
 JackDB v0.01
 ============
 
