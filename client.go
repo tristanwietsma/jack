@@ -21,10 +21,25 @@ import (
 	"strconv"
 )
 
-func NewServerConnection(address string, port uint) (net.Conn, error) {
-	fullAddress := address + ":" + strconv.FormatUint(uint64(port), 10)
-	con, err := net.Dial("tcp", fullAddress)
-	return con, err
+type ServerConnection struct {
+	conn net.Conn
 }
 
+func (sc *ServerConnection) Send(m *Message)  {
+	// to do
+}
+
+func (sc *ServerConnection) Close() {
+	// to do
+}
+
+func NewServerConnection(address string, port uint) (ServerConnection, error) {
+	fullAddress := address + ":" + strconv.FormatUint(uint64(port), 10)
+	conn, err := net.Dial("tcp", fullAddress)
+	sc = ServerConnection{}
+	if err == nil {
+		sc.conn = conn
+	}
+	return sc, err
+}
 
