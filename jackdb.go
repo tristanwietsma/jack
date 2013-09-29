@@ -51,7 +51,7 @@ func CloseConnection(c net.Conn) {
 	c.Close()
 }
 
-func HandleConnection(c net.Conn, dbase *MetaStore) {
+func HandleConnection(c net.Conn, dbase *metastore.MetaStore) {
 	defer CloseConnection(c)
 
 	fromAddr := c.RemoteAddr()
