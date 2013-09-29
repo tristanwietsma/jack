@@ -34,7 +34,7 @@ func (sc *ServerConnection) transmit(m *Message) error {
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
-	_, err := (*sc).conn.Read(buf)
+	_, err = (*sc).conn.Read(buf)
 	if err != nil {
 		return err
 	}
@@ -57,31 +57,31 @@ WAIT_FOR_SERVER:
 
 func (sc *ServerConnection) Get(key string) string {
 	m := NewGetMessage(key)
-	(*sc).transmit(&m)
+	(*sc).transmit(m)
 	return <-(*sc).feed
 }
 
 func (sc *ServerConnection) Set(key, value string) string {
 	m := NewSetMessage(key, value)
-	(*sc).transmit(&m)
+	(*sc).transmit(m)
 	return <-(*sc).feed
 }
 
 func (sc *ServerConnection) Delete(key string) string {
 	m := NewDeleteMessage(key)
-	(*sc).transmit(&m)
+	(*sc).transmit(m)
 	return <-(*sc).feed
 }
 
 func (sc *ServerConnection) Publish(key, value string) string {
 	m := NewPublishMessage(key, value)
-	(*sc).transmit(&m)
+	(*sc).transmit(m)
 	return <-(*sc).feed
 }
 
 func (sc *ServerConnection) Subscribe(key string, recv chan<- string) {
 	m := NewGetMessage(key)
-	(*sc).transmit(&m)
+	(*sc).transmit(m)
 	value := <-(*sc).feed
 	recv<-value
 }
