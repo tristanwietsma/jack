@@ -17,12 +17,21 @@ limitations under the License.
 package jackdb
 
 import (
+	"fmt"
 	"bytes"
 	"net"
 	"strconv"
 )
 
-var MaxConnectionsError = Error("Maximum connections reached.")
+type ConnectionPoolError struct {
+	desc string
+}
+
+func (e ConnectionPoolError) Error() string {
+	return fmt.Sprintf("ConnectionPoolError: %s", e.desc)
+}
+
+var MaxConnectionsError = ConnectionPoolError{"Maximum connections reached."}
 
 // ConnectionPool
 type ConnectionPool struct {
@@ -49,13 +58,13 @@ func (cp *ConnectionPool) Connect() (*Connection, error) {
 	}
 
 	if len(cp.free) > 0 {
-		sc = cp.free[0]
+		sc := cp.free[0]
 		cp.free = cp.free[1:]
 		return sc, nil
 	}
 
 	cp.count++
-	sc, err := NewConnection(sc.address, sc.port)
+	sc, err := NewConnection(cp.address, cp.port)
 	if err != nil {
 		return nil, err
 	}
