@@ -1,4 +1,4 @@
-_Thanks for all the suggestions and early review! I've got a lot of work ahead of me._
+_Update 9/28/2013: Major revision coming soon. The project is currently not working.
 
 _Update 9/25/2013: I've spun the backend storage structure into a separate project called [MetaStore](https://github.com/tristanwietsma/metastore). MetaStore splits the map into buckets for finer lock granularity; hashing with fnv. (Hat tip to bonekeeper)_
 
