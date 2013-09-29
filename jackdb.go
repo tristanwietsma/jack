@@ -80,8 +80,9 @@ NEXTMESSAGE:
 	case GET:
 
 		if value, ok := (*dbase).Bucket[i].Get(string(msg.key)); ok {
-			value = append(value, EOM)
-			_, err = c.Write(value)
+			b := []byte(value)
+			b = append(b, EOM)
+			_, err = c.Write(b)
 		} else {
 			_, err = c.Write([]byte{EOM})
 		}
@@ -122,8 +123,9 @@ NEXTMESSAGE:
 		outgoing := make(chan string)
 		(*dbase).Bucket[i].Subscribe(string(msg.key), outgoing)
 		for value := range outgoing {
-			value = append(value, EOM)
-			_, err := c.Write(value)
+			b := []byte(value)
+			b = append(b, EOM)
+			_, err := c.Write(b)
 			if err != nil {
 				close(outgoing)
 				return
