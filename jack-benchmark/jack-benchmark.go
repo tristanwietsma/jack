@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"sync"
 	"strconv"
 	"github.com/tristanwietsma/jackdb"
@@ -33,9 +32,10 @@ func main() {
 	flag.Parse()
 
 	// build client pool
-	clients := []jackdb.ServerConnections{}
-	for i:=0; i<numClients; i++ {
-		c, err := jackdb.NewServerConnection(addr, port)
+	clients := [](*jackdb.ServerConnection){}
+	var i uint
+	for i = 0; i < *numClients; i++ {
+		c, err := jackdb.NewServerConnection(*addr, *port)
 		if err != nil {
 			panic(err)
 		}
@@ -43,12 +43,12 @@ func main() {
 	}
 
 	// set
-	wg := sync.WaitGroup()
-	for i:=0; i<numClients; i++ {
+	var wg sync.WaitGroup
+	for i = 0; i < *numClients; i++ {
 		wg.Add(1)
-		go func(idx int) {
+		go func(idx uint) {
 			defer wg.Done()
-			key := "key" + strconv.Itoa(idx)
+			key := "key" + strconv.FormatUint(uint64(idx), 10)
 			_ = clients[idx].Set(key, "val")
 		}(i)
 	}
