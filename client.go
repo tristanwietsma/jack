@@ -17,6 +17,7 @@ limitations under the License.
 package jackdb
 
 import (
+	"bytes"
 	"net"
 	"strconv"
 )
@@ -36,7 +37,7 @@ func (sc *ServerConnection) transmit(m *Message) error {
 
 		buf := make([]byte, 1024)
 
-WAIT_FOR_SERVER:
+	WAIT_FOR_SERVER:
 		_, err := (*sc).conn.Read(buf)
 		if err != nil {
 			return err
@@ -49,10 +50,12 @@ WAIT_FOR_SERVER:
 		}
 
 		payload := string(buf[:end])
-		(*sc).feed<-payload
+		(*sc).feed <- payload
 		if (*m).cmd == SUB {
 			goto WAIT_FOR_SERVER
 		}
+		return nil
+	default:
 		return nil
 	}
 }
@@ -65,10 +68,9 @@ func (sc *ServerConnection) Close() error {
 func NewServerConnection(address string, port uint) (*ServerConnection, error) {
 	fullAddress := address + ":" + strconv.FormatUint(uint64(port), 10)
 	conn, err := net.Dial("tcp", fullAddress)
-	sc = ServerConnection{}
+	sc := ServerConnection{}
 	if err == nil {
 		sc.conn = conn
 	}
 	return &sc, err
 }
-

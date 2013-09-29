@@ -17,10 +17,10 @@ limitations under the License.
 package jackdb
 
 import (
+	"github.com/tristanwietsma/metastore"
 	"log"
 	"net"
 	"strconv"
-	"github.com/tristanwietsma/metastore"
 )
 
 func StartServer(port uint, buckets uint) {
