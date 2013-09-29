@@ -44,7 +44,7 @@ WAIT_FOR_SERVER:
 
 		end := bytes.IndexByte(buf, EOM)
 		if end < 0 {
-			err := ProtocolError{"Message is missing EOM byte.")
+			err := ProtocolError{"Message is missing EOM byte."}
 			return err
 		}
 
