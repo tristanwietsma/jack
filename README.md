@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tristanwietsma/jackdb.png?branch=master)](https://travis-ci.org/tristanwietsma/jackdb)
+[![Build Status](https://travis-ci.org/tristanwietsma/jackdb.png)](https://travis-ci.org/tristanwietsma/jackdb)
 
 _Update 9/28/2013: Major revision coming soon. The project is currently not working._
 
