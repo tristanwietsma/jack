@@ -1,4 +1,4 @@
 language: go
-script: go get github.com/tristanwietsma/jackdb && go test
+script: go get -u github.com/tristanwietsma/jackdb && go test
 notifications:
 email: false
