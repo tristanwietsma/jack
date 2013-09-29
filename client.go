@@ -29,35 +29,30 @@ type ServerConnection struct {
 
 func (sc *ServerConnection) transmit(m *Message) error {
 	b := m.Bytes()
-	n, err := (*sc).conn.Write(b)
-	switch (*m).cmd {
-	case SET, PUB, DEL:
+	_, err := (*sc).conn.Write(b)
+
+	buf := make([]byte, 1024)
+
+WAIT_FOR_SERVER:
+	_, err := (*sc).conn.Read(buf)
+	if err != nil {
 		return err
-	case GET, SUB:
-
-		buf := make([]byte, 1024)
-
-	WAIT_FOR_SERVER:
-		_, err := (*sc).conn.Read(buf)
-		if err != nil {
-			return err
-		}
-
-		end := bytes.IndexByte(buf, EOM)
-		if end < 0 {
-			err := ProtocolError{"Message is missing EOM byte."}
-			return err
-		}
-
-		payload := string(buf[:end])
-		(*sc).feed <- payload
-		if (*m).cmd == SUB {
-			goto WAIT_FOR_SERVER
-		}
-		return nil
-	default:
-		return nil
 	}
+
+	end := bytes.IndexByte(buf, EOM)
+	if end < 0 {
+		err := ProtocolError{"Message is missing EOM byte."}
+		return err
+	}
+
+	payload := string(buf[:end])
+	(*sc).feed <- payload
+
+	if (*m).cmd == SUB {
+		goto WAIT_FOR_SERVER
+	}
+
+	return nil
 }
 
 func (sc *ServerConnection) Close() error {
