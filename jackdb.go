@@ -1,54 +1,42 @@
 package jackdb
 
 import (
-	"flag"
+	"hash/fnv"
 	"log"
 	"net"
 	"strconv"
 	"strings"
-	"sync"
 )
 
-var (
-	// DB is the server's storage container.
-	DB Store
+func StartServer(port int, buckets int) {
 
-	// OnlyOnce makes sure the DB is not initialized more than once.
-	OnlyOnce sync.Once
-)
+	var db MetaStore
+	db.Init(buckets)
+	log.Printf("created storage with %d buckets\n", buckets)
 
-func initialize() {
-	DB.Init()
-}
-
-// StartServer starts a server on a given port.
-func StartServer(pt int) {
-	OnlyOnce.Do(initialize)
-
-	portStr := ":" + strconv.Itoa(pt)
+	portStr := ":" + strconv.Itoa(port)
 	listener, err := net.Listen("tcp", portStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer listener.Close()
+	log.Printf("server started on port %d\n", port)
 
 	for {
 		c, err := listener.Accept()
 		if err != nil {
 			log.Fatal(err)
 		}
-		go HandleConnection(c)
+		go HandleConnection(c, &db)
 	}
 }
 
-// CloseConnection terminates a client's connection.
 func CloseConnection(c net.Conn) {
 	log.Printf("[%s] closed connection\n", c.RemoteAddr())
 	c.Close()
 }
 
-// HandleConnection manages client connections to the server
-func HandleConnection(c net.Conn) {
+func HandleConnection(c net.Conn, dbase *Store) {
 	defer CloseConnection(c)
 
 	fromAddr := c.RemoteAddr()
@@ -56,109 +44,77 @@ func HandleConnection(c net.Conn) {
 
 	buf := make([]byte, 1024)
 
+	hash := fnv.New32()
+	bucketIndex := func(kb []byte) int {
+		hash.Write(kb)
+		idx := h.Sum32() % dbase.size
+		hash.Reset()
+		return idx
+	}
+
 NEXTMESSAGE:
 
-	nb, err := c.Read(buf)
+	_, err := c.Read(buf)
 	if err != nil {
 		return
 	}
 
-	args := strings.Split(string(buf[:nb]), " ")
-	numArgs := len(args)
+	msg, err := Parse(buf)
+	if err != nil {
+		return
+	}
 
-	switch args[0] {
+	i := bucketIndex(msg.key)
 
-	case "GET":
+	switch msg.cmd {
 
-		if numArgs != 2 {
-			return
-		}
+	case GET:
 
-		if value, ok := DB.Get(args[1]); ok {
-			_, err = c.Write([]byte(value))
+		if value, ok := (*dbase).bucket[i].Get(msg.key); ok {
+			value = append(value, EOM)
+			_, err = c.Write(value)
 		} else {
-			_, err = c.Write([]byte("(nil)"))
+			_, err = c.Write([]byte{EOM})
 		}
-
 		if err != nil {
 			return
 		}
-
 		goto NEXTMESSAGE
 
-	case "SET":
+	case SET:
 
-		if numArgs != 3 {
-			return
-		}
-
-		if ok := DB.Set(args[1], args[2]); ok {
-			_, err = c.Write([]byte("OK"))
-		} else {
-			_, err = c.Write([]byte("FAIL"))
-			return
-		}
-
+		(*dbase).bucket[i].Set(msg.key, msg.arg)
+		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
 			return
 		}
-
 		goto NEXTMESSAGE
 
-	case "DEL":
+	case DEL:
 
-		if numArgs < 2 {
-			return
-		}
-
-		DB.Delete(args[1:])
-		_, err = c.Write([]byte("OK"))
-
+		(*dbase).bucket[i].Delete(msg.key)
+		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
 			return
 		}
-
 		goto NEXTMESSAGE
 
-	case "PUB":
+	case PUB:
 
-		if numArgs != 2 {
-			return
-		}
-
-		incoming := make(chan string)
-		go DB.Publish(args[1], incoming)
-
-		_, err = c.Write([]byte("READY"))
-
+		(*dbase).bucket[i].Publish(msg.key, msg.arg)
+		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
-			close(incoming)
 			return
 		}
+		goto NEXTMESSAGE
 
-		for {
-			nb, err := c.Read(buf)
-
-			if err != nil {
-				close(incoming)
-				return
-			}
-
-			incoming <- string(buf[:nb])
-		}
-
-	case "SUB":
-
-		if numArgs != 2 {
-			return
-		}
+	case SUB:
 
 		outgoing := make(chan string)
-		DB.Subscribe(args[1], outgoing)
-
+		(*dbase).bucket[i].Subscribe(msg.key, outgoing)
 		for value := range outgoing {
-			_, err := c.Write([]byte(value))
-
+			value = append(value, EOM)
+			_, err := c.Write(value)
 			if err != nil {
 				close(outgoing)
 				return
