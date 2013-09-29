@@ -21,8 +21,8 @@ import (
 	"github.com/tristanwietsma/jackdb"
 )
 
-var port = flag.Int("port", 2000, "port number")
-var buckets = flag.Int("buckets", 1000, "number of buckets")
+var port = flag.Uint("port", 2000, "port number")
+var buckets = flag.Uint("buckets", 1000, "number of buckets")
 
 // Main method
 func main() {
