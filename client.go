@@ -55,6 +55,37 @@ WAIT_FOR_SERVER:
 	return nil
 }
 
+func (sc *ServerConnection) Get(key string) string {
+	m := NewGetMessage(key)
+	(*sc).transmit(&m)
+	return <-(*sc).feed
+}
+
+func (sc *ServerConnection) Set(key, value string) string {
+	m := NewSetMessage(key, value)
+	(*sc).transmit(&m)
+	return <-(*sc).feed
+}
+
+func (sc *ServerConnection) Delete(key string) string {
+	m := NewDeleteMessage(key)
+	(*sc).transmit(&m)
+	return <-(*sc).feed
+}
+
+func (sc *ServerConnection) Publish(key, value string) string {
+	m := NewPublishMessage(key, value)
+	(*sc).transmit(&m)
+	return <-(*sc).feed
+}
+
+func (sc *ServerConnection) Subscribe(key string, recv chan<- string) {
+	m := NewGetMessage(key)
+	(*sc).transmit(&m)
+	value := <-(*sc).feed
+	recv<-value
+}
+
 func (sc *ServerConnection) Close() error {
 	err := (*sc).Close()
 	return err
