@@ -20,7 +20,6 @@ import (
 	"log"
 	"net"
 	"strconv"
-	"strings"
 	"github.com/tristanwietsma/metastore"
 )
 
@@ -28,7 +27,7 @@ func StartServer(port int, buckets int) {
 
 	var db metastore.MetaStore
 	db.Init(buckets)
-	log.Printf("created storage with %d buckets\n", buckets)
+	log.Printf("created storage with %i buckets\n", buckets)
 
 	portStr := ":" + strconv.Itoa(port)
 	listener, err := net.Listen("tcp", portStr)
