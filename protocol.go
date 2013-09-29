@@ -82,6 +82,48 @@ func (c *Message) Bytes() []byte {
 	return append(b, EOM)
 }
 
+// GetMessage constructs a conforming 'get' message
+func GetMessage(key string) *Message {
+	c := Message{}
+	c.cmd = GET
+	c.key = []byte(key)
+	return &c
+}
+
+// SetMessage constructs a conforming 'set' message
+func SetMessage(key, value string) *Message {
+	c := Message{}
+	c.cmd = SET
+	c.key = []byte(key)
+	c.arg = []byte(value)
+	return &c
+}
+
+// DeleteMessage constructs a conforming 'del' message
+func DeleteMessage(key string) *Message {
+	c := Message{}
+	c.cmd = DEL
+	c.key = []byte(key)
+	return &c
+}
+
+// PublishMessage constructs a conforming 'pub' message
+func PublishMessage(key, value string) *Message {
+	c := Message{}
+	c.cmd = PUB
+	c.key = []byte(key)
+	c.arg = []byte(value)
+	return &c
+}
+
+// SubscribeMessage constructs a conforming 'sub' message
+func SubscribeMessage(key string) *Message {
+	c := Message{}
+	c.cmd = SUB
+	c.key = []byte(key)
+	return &c
+}
+
 // Parse accepts an incoming byte buffer and returns a Message (and error if malformed).
 func Parse(b []byte) (*Message, error) {
 
