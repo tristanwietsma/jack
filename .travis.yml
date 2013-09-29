@@ -1,4 +1,6 @@
 language: go
+go:
+        - tip
 script: go get -u github.com/tristanwietsma/jackdb && go test
 notifications:
 email: false
