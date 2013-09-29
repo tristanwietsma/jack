@@ -46,11 +46,11 @@ func main() {
 	wg := sync.WaitGroup()
 	for i:=0; i<numClients; i++ {
 		wg.Add(1)
-		go func() {
+		go func(idx int) {
 			defer wg.Done()
-			key := "key" + strconv.Itoa(i)
-			_ := clients[i].Set(key, "val")
-		}
+			key := "key" + strconv.Itoa(idx)
+			_ = clients[idx].Set(key, "val")
+		}(i)
 	}
 	wg.Wait()
 
