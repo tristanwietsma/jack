@@ -79,7 +79,7 @@ NEXTMESSAGE:
 
 	case GET:
 
-		if value, ok := (*dbase).bucket[i].Get(msg.key); ok {
+		if value, ok := (*dbase).Bucket[i].Get(msg.key); ok {
 			value = append(value, EOM)
 			_, err = c.Write(value)
 		} else {
@@ -92,7 +92,7 @@ NEXTMESSAGE:
 
 	case SET:
 
-		(*dbase).bucket[i].Set(msg.key, msg.arg)
+		(*dbase).Bucket[i].Set(msg.key, msg.arg)
 		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
 			return
@@ -101,7 +101,7 @@ NEXTMESSAGE:
 
 	case DEL:
 
-		(*dbase).bucket[i].Delete(msg.key)
+		(*dbase).Bucket[i].Delete(msg.key)
 		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
 			return
@@ -110,7 +110,7 @@ NEXTMESSAGE:
 
 	case PUB:
 
-		(*dbase).bucket[i].Publish(msg.key, msg.arg)
+		(*dbase).Bucket[i].Publish(msg.key, msg.arg)
 		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
 			return
@@ -120,7 +120,7 @@ NEXTMESSAGE:
 	case SUB:
 
 		outgoing := make(chan string)
-		(*dbase).bucket[i].Subscribe(msg.key, outgoing)
+		(*dbase).Bucket[i].Subscribe(msg.key, outgoing)
 		for value := range outgoing {
 			value = append(value, EOM)
 			_, err := c.Write(value)
