@@ -29,7 +29,7 @@ func StartServer(port uint, buckets uint) {
 	db.Init(buckets)
 	log.Printf("created storage with %d buckets\n", buckets)
 
-	portStr := ":" + strconv.Itoa(port)
+	portStr := ":" + strconv.FormatUint(port, 10)
 	listener, err := net.Listen("tcp", portStr)
 	if err != nil {
 		log.Fatal(err)
