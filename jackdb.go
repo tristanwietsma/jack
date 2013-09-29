@@ -1,16 +1,16 @@
 package jackdb
 
 import (
-	"hash/fnv"
 	"log"
 	"net"
 	"strconv"
 	"strings"
+	"github.com/tristanwietsma/metastore"
 )
 
 func StartServer(port int, buckets int) {
 
-	var db MetaStore
+	var db metastore.MetaStore
 	db.Init(buckets)
 	log.Printf("created storage with %d buckets\n", buckets)
 
@@ -36,7 +36,7 @@ func CloseConnection(c net.Conn) {
 	c.Close()
 }
 
-func HandleConnection(c net.Conn, dbase *Store) {
+func HandleConnection(c net.Conn, dbase *MetaStore) {
 	defer CloseConnection(c)
 
 	fromAddr := c.RemoteAddr()
@@ -44,13 +44,7 @@ func HandleConnection(c net.Conn, dbase *Store) {
 
 	buf := make([]byte, 1024)
 
-	hash := fnv.New32()
-	bucketIndex := func(kb []byte) int {
-		hash.Write(kb)
-		idx := h.Sum32() % dbase.size
-		hash.Reset()
-		return idx
-	}
+	bucketIndex := dbase.GetHasher()
 
 NEXTMESSAGE:
 
