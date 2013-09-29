@@ -22,12 +22,59 @@ import (
 	"strconv"
 )
 
-type ServerConnection struct {
+var MaxConnectionsError = Error("Maximum connections reached.")
+
+// ConnectionPool
+type ConnectionPool struct {
+	address string
+	port uint
+	size uint
+	count uint
+	free []*Connection
+}
+
+func NewConnectionPool(address string, port, size uint) *ConnectionPool {
+	return &ConnectionPool{
+		address: address,
+		port: port,
+		size: size,
+	}
+}
+
+// Connect gets a connection from the pool
+func (cp *ConnectionPool) Connect() (*Connection, error) {
+
+	if cp.count == cp.size && len(cp.free) == 0 {
+		return nil, MaxConnectionsError
+	}
+
+	if len(cp.free) > 0 {
+		sc = cp.free[0]
+		cp.free = cp.free[1:]
+		return sc, nil
+	}
+
+	cp.count++
+	sc, err := NewConnection(sc.address, sc.port)
+	if err != nil {
+		return nil, err
+	}
+	return sc, nil
+}
+
+// Free sends a connection back to the pool
+func (cp *ConnectionPool) Free(c *Connection) error {
+	cp.free = append(cp.free, c)
+	return nil
+}
+
+// Connection
+type Connection struct {
 	conn net.Conn
 	feed chan string
 }
 
-func (sc *ServerConnection) transmit(m *Message) error {
+func (sc *Connection) transmit(m *Message) error {
 	b := m.Bytes()
 	_, err := (*sc).conn.Write(b)
 
@@ -55,7 +102,7 @@ WAIT_FOR_SERVER:
 	return nil
 }
 
-func (sc *ServerConnection) Get(key string) string {
+func (sc *Connection) Get(key string) string {
 	m := NewGetMessage(key)
 	err := (*sc).transmit(m)
 	if err != nil {
@@ -64,7 +111,7 @@ func (sc *ServerConnection) Get(key string) string {
 	return <-(*sc).feed
 }
 
-func (sc *ServerConnection) Set(key, value string) string {
+func (sc *Connection) Set(key, value string) string {
 	m := NewSetMessage(key, value)
 	err := (*sc).transmit(m)
 	if err != nil {
@@ -73,7 +120,7 @@ func (sc *ServerConnection) Set(key, value string) string {
 	return <-(*sc).feed
 }
 
-func (sc *ServerConnection) Delete(key string) string {
+func (sc *Connection) Delete(key string) string {
 	m := NewDeleteMessage(key)
 	err := (*sc).transmit(m)
 	if err != nil {
@@ -82,7 +129,7 @@ func (sc *ServerConnection) Delete(key string) string {
 	return <-(*sc).feed
 }
 
-func (sc *ServerConnection) Publish(key, value string) string {
+func (sc *Connection) Publish(key, value string) string {
 	m := NewPublishMessage(key, value)
 	err := (*sc).transmit(m)
 	if err != nil {
@@ -91,24 +138,23 @@ func (sc *ServerConnection) Publish(key, value string) string {
 	return <-(*sc).feed
 }
 
-func (sc *ServerConnection) Subscribe(key string, recv chan<- string) {
+func (sc *Connection) Subscribe(key string, recv chan<- string) {
 	m := NewGetMessage(key)
 	go (*sc).transmit(m)
 	for {
-		value := <-(*sc).feed
-		recv<-value
+		recv <- <-(*sc).feed
 	}
 }
 
-func (sc *ServerConnection) Close() error {
-	err := (*sc).Close()
+func (sc *Connection) Close() error {
+	err := (*sc).conn.Close()
 	return err
 }
 
-func NewServerConnection(address string, port uint) (*ServerConnection, error) {
+func NewConnection(address string, port uint) (*Connection, error) {
 	fullAddress := address + ":" + strconv.FormatUint(uint64(port), 10)
 	conn, err := net.Dial("tcp", fullAddress)
-	sc := ServerConnection{}
+	sc := Connection{}
 	if err == nil {
 		sc.conn = conn
 	}
