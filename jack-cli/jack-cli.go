@@ -69,6 +69,8 @@ func main() {
 				fmt.Printf("%s:\t%s\n", key, value)
 			}
 
+			fmt.Println("debug>>>>>>>>>>>>>>")
+
 		case "SET":
 
 			// handle syntax error
