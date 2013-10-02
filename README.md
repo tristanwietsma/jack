@@ -13,14 +13,14 @@ The underlying data structure is [MetaStore](https://github.com/tristanwietsma/m
 What isn't JackDB?
 ------------------
 
-Jack is not Redis. Jack isn't a fan of large APIs.
+Jack is not Redis. Jack isn't a fan of large APIs and does not support persistence.
 
 The project is currently in beta and should be considered volatile. Contributions are welcome.
 
 Installation
 ------------
 
-You can use the Go tool to install the libary and dependencies:
+You can use the Go tool to install the library and dependencies:
 
     export GOPATH=<where you store your Go code>
     go get -u github.com/tristanwietsma/jackdb
@@ -40,8 +40,35 @@ To start the server, run jackd:
     $ jackd
     2013/10/02 15:26:25 created storage with 1000 buckets
     2013/10/02 15:26:25 server started on port 2000
+    ...
 
-To start the command-line tool (which is still *very* young:
+To start the command-line tool (which is still *very* young):
 
     $ jack-cli
+    jack> set key123 val567
+    jack> 1
+    jack> get key123
+    jack> key123 := val567
+    jack> pub key123 765lav
+    jack> 1
+    jack> sub key123
+    ...
 
+The commands are all three characters and not case sensitive. The following should be self-explanatory:
+
+    jack> set <key> <value>
+
+    jack> get <key> [<key> ...] // supports multiple keys
+
+    jack> pub <key> <value>
+
+    jack> del <key> [<key> ...] // supports multiple keys
+
+    jack> sub <key> [<key> ...] // supports multiple keys
+
+The Future
+----------
+
+* Currently, the cli splits arguments on space (so you can't have spaces in your value). This will get better; the cli was hacked together pretty fast for testing purposes.
+
+* I want to test it and add some benchmarks in the near future. I'm sure there is room for optimization. I hear a good argument in favor of a particular bell or whistle, features are capped.
