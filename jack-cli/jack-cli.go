@@ -122,13 +122,15 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					fmt.Printf("subscribed to %s\n", k)
-					c.Subscribe(k, recv)
+					middleman := make(chan string)
+					c.Subscribe(k, middleman)
+					for {
+						recv <- k + ":\t" + <-middleman
+					}
 				}(key)
 			}
 
 			for {
-				fmt.Println("waiting on recv.............")
 				fmt.Println(<-recv)
 			}
 
