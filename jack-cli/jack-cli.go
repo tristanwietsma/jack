@@ -122,11 +122,7 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					middleman := make(chan string)
-					c.Subscribe(k, middleman)
-					for {
-						recv <- k + ":\t" + <-middleman
-					}
+					c.Subscribe(k, recv)
 				}(key)
 			}
 
