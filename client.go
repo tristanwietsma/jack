@@ -107,8 +107,6 @@ WAIT_FOR_SERVER:
 	if m.cmd == SUB {
 		goto WAIT_FOR_SERVER
 	}
-
-	return nil
 }
 
 func (sc *Connection) Get(key string) string {
