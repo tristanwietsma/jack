@@ -117,7 +117,7 @@ func main() {
 			// subscribe to each key
 			recv := make(chan string)
 			for _, key := range tokens[1:] {
-				func(k string) {
+				go func(k string) {
 					c, err := pool.Connect()
 					if err != nil {
 						panic(err)
