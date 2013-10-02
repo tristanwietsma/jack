@@ -1,7 +1,7 @@
 JackDB (beta)
 =============
 
-[![Build Status](https://travis-ci.org/tristanwietsma/jackdb.png?branch=master)](https://travis-ci.org/tristanwietsma/jackdb)
+[![Build Status](https://travis-ci.org/tristanwietsma/jackdb.png?branch=master)](https://travis-ci.org/tristanwietsma/jackdb) (build passed)
 
 What is JackDB?
 ---------------
