@@ -85,14 +85,14 @@ type Connection struct {
 
 func (sc *Connection) transmit(m *Message) error {
 	b := m.Bytes()
-	_, err := (*sc).conn.Write(b)
+	_, err := sc.conn.Write(b)
 
 	fmt.Println(">>>>>>>>>>>>>wrote bytes")
 
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
-	_, err = (*sc).conn.Read(buf)
+	_, err = sc.conn.Read(buf)
 	if err != nil {
 		return err
 	}
@@ -105,10 +105,14 @@ WAIT_FOR_SERVER:
 		return err
 	}
 
-	payload := string(buf[:end])
-	(*sc).feed <- payload
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> before payload")
 
-	if (*m).cmd == SUB {
+	payload := string(buf[:end])
+	sc.feed <- payload
+
+	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<< after")
+
+	if m.cmd == SUB {
 		goto WAIT_FOR_SERVER
 	}
 
@@ -117,46 +121,46 @@ WAIT_FOR_SERVER:
 
 func (sc *Connection) Get(key string) string {
 	m := NewGetMessage(key)
-	err := (*sc).transmit(m)
+	err := sc.transmit(m)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("here>>>>>>")
-	return <-(*sc).feed
+	return <-sc.feed
 }
 
 func (sc *Connection) Set(key, value string) string {
 	m := NewSetMessage(key, value)
-	err := (*sc).transmit(m)
+	err := sc.transmit(m)
 	if err != nil {
 		panic(err)
 	}
-	return <-(*sc).feed
+	return <-sc.feed
 }
 
 func (sc *Connection) Delete(key string) string {
 	m := NewDeleteMessage(key)
-	err := (*sc).transmit(m)
+	err := sc.transmit(m)
 	if err != nil {
 		panic(err)
 	}
-	return <-(*sc).feed
+	return <-sc.feed
 }
 
 func (sc *Connection) Publish(key, value string) string {
 	m := NewPublishMessage(key, value)
-	err := (*sc).transmit(m)
+	err := sc.transmit(m)
 	if err != nil {
 		panic(err)
 	}
-	return <-(*sc).feed
+	return <-sc.feed
 }
 
 func (sc *Connection) Subscribe(key string, recv chan<- string) {
 	m := NewGetMessage(key)
-	go (*sc).transmit(m)
+	go sc.transmit(m)
 	for {
-		recv <- <-(*sc).feed
+		recv <- <-sc.feed
 	}
 }
 
