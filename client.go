@@ -136,7 +136,7 @@ func (sc *Connection) Publish(key, value string) string {
 }
 
 func (sc *Connection) Subscribe(key string, recv chan<- string) {
-	m := NewGetMessage(key)
+	m := NewSubscribeMessage(key)
 	go sc.transmit(m)
 	for {
 		fmt.Println("waiting on sc.feed")
