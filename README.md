@@ -73,4 +73,4 @@ The Future
 
 * Currently, the cli splits arguments on space (so you can't have spaces in your value). This will get better; the cli was hacked together pretty fast for testing purposes.
 
-* I want to test it and add some benchmarks in the near future. I'm sure there is room for optimization. I hear a good argument in favor of a particular bell or whistle, features are capped.
+* I want to test it and add some benchmarks in the near future. I'm sure there is room for optimization. Unless I hear a good argument for a feature, consider the API capped.
