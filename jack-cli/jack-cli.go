@@ -44,7 +44,7 @@ func main() {
 
 	var tokens []string
 	for {
-		fmt.Print("jack> ")
+		fmt.Print("\033[34;1mjack>\033[0m ")
 		tokens = ReadLine()
 
 		// handle empty string
@@ -59,7 +59,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("Syntax: GET key [key ...]")
+				fmt.Println("\033[31;1mSyntax: GET key [key ...]\033[0m")
 				continue
 			}
 
@@ -75,7 +75,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("Syntax: SET key value")
+				fmt.Println("\033[31;1mSyntax: SET key value\033[0m")
 				continue
 			}
 
@@ -86,7 +86,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("Syntax: DEL key [key ...]")
+				fmt.Println("\033[31;1mSyntax: DEL key [key ...]\033[0m")
 				continue
 			}
 
@@ -99,7 +99,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("Syntax: PUB key value")
+				fmt.Println("\033[31;1mSyntax: PUB key value\033[0m")
 				continue
 			}
 
@@ -110,7 +110,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("Syntax: SUB key [key ...]")
+				fmt.Println("\033[31;1mSyntax: SUB key [key ...]\033[0m")
 				continue
 			}
 
@@ -136,7 +136,7 @@ func main() {
 			}
 
 		default:
-			fmt.Printf("Unknown command: %s\n", cmd)
+			fmt.Printf("\033[31;1mUnknown command: %s\033[0m\n", cmd)
 		}
 	}
 }
