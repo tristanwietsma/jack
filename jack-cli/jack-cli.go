@@ -66,10 +66,10 @@ func main() {
 			// get each key
 			for _, key := range tokens[1:] {
 				value := conn.Get(key)
-				fmt.Printf("%s:\t%s\n", key, value)
+				if len(value) > 0 {
+					fmt.Printf("%s:\t%s\n", key, value)
+				}
 			}
-
-			fmt.Println("debug>>>>>>>>>>>>>>")
 
 		case "SET":
 
