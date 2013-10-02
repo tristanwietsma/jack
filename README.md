@@ -13,9 +13,9 @@ JackDB is built on top of [MetaStore](https://github.com/tristanwietsma/metastor
     export GOPATH=<where you store your Go code>
     go get -u github.com/tristanwietsma/jackdb
 
-The project currently ships with the server, *jackd*, and a command line interface, *jack-cli*. Since the Go tool doesn't like multiple build targets in the same project, you need to build them separately:
+The project currently ships with the server, **jackd**, and a command line interface, **jack-cli**. Since the Go tool doesn't like multiple build targets in the same project, you need to build them separately:
 
     cd $GOPATH/src/github.com/tristanwietsma/jackdb
     make
 
-The 'make' will build both  *jackd* and *jack-cli*, as well as move them to **$GOCODE/bin**.
+The 'make' will build both  **jackd** and **jack-cli**, as well as move them to *$GOCODE/bin*.
