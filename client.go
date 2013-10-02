@@ -89,10 +89,15 @@ func (sc *Connection) transmit(m *Message) error {
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
+
+	fmt.Println("debug::: 93")
+
 	_, err = sc.conn.Read(buf)
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("debug::: 100", buf)
 
 	end := bytes.IndexByte(buf, EOM)
 	if end < 0 {

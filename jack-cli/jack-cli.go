@@ -131,6 +131,8 @@ func main() {
 				}(key)
 			}
 
+			fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>")
+
 			for {
 				fmt.Println(<-recv)
 			}
