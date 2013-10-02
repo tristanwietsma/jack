@@ -122,7 +122,7 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					fmt.Println("subscribed to %s", k)
+					fmt.Printf("subscribed to %s\n", k)
 					c.Subscribe(k, recv)
 				}(key)
 			}
