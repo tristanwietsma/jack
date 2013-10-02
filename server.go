@@ -79,8 +79,6 @@ NEXTMESSAGE:
 
 	case GET:
 
-		log.Printf("debug: get cmd\n")
-
 		if value, ok := (*dbase).Bucket[i].Get(string(msg.key)); ok {
 			b := []byte(value)
 			b = append(b, EOM)
@@ -94,8 +92,6 @@ NEXTMESSAGE:
 		goto NEXTMESSAGE
 
 	case SET:
-
-		log.Printf("debug: set cmd\n")
 
 		(*dbase).Bucket[i].Set(string(msg.key), string(msg.arg))
 		_, err = c.Write([]byte{SUCCESS})
@@ -115,8 +111,6 @@ NEXTMESSAGE:
 
 	case PUB:
 
-		log.Printf("debug: pub cmd\n")
-
 		(*dbase).Bucket[i].Publish(string(msg.key), string(msg.arg))
 		_, err = c.Write([]byte{SUCCESS})
 		if err != nil {
@@ -126,17 +120,13 @@ NEXTMESSAGE:
 
 	case SUB:
 
-		log.Printf("debug: sub cmd\n")
-
 		outgoing := make(chan string)
 		(*dbase).Bucket[i].Subscribe(string(msg.key), outgoing)
 		for value := range outgoing {
 			b := []byte(value)
 			b = append(b, EOM)
-			log.Println("writing to subscriber:", b)
 			_, err := c.Write(b)
 			if err != nil {
-				log.Println("closing sub connection")
 				close(outgoing)
 				return
 			}

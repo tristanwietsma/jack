@@ -90,7 +90,6 @@ func (sc *Connection) transmit(m *Message) {
 
 WAIT_FOR_SERVER:
 
-	fmt.Println("waiting on server...")
 	_, err = sc.conn.Read(buf)
 	if err != nil {
 		panic(err)
@@ -102,9 +101,7 @@ WAIT_FOR_SERVER:
 	}
 
 	payload := string(buf[:end])
-	fmt.Println("got payload:", payload, "... sending on sc.feed")
 	sc.feed <- payload
-	fmt.Println("sent payload")
 
 	if m.cmd == SUB {
 		goto WAIT_FOR_SERVER
@@ -139,7 +136,6 @@ func (sc *Connection) Subscribe(key string, recv chan<- string) {
 	m := NewSubscribeMessage(key)
 	go sc.transmit(m)
 	for {
-		fmt.Println("waiting on sc.feed")
 		recv <- <-sc.feed
 	}
 }
