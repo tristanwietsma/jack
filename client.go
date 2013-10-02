@@ -86,7 +86,6 @@ type Connection struct {
 func (sc *Connection) transmit(m *Message) error {
 	b := m.Bytes()
 	_, err := sc.conn.Write(b)
-
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
@@ -156,7 +155,7 @@ func (sc *Connection) Subscribe(key string, recv chan<- string) {
 }
 
 func (sc *Connection) Close() error {
-	err := (*sc).conn.Close()
+	err := sc.conn.Close()
 	return err
 }
 
