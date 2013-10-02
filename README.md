@@ -44,7 +44,7 @@ To start the server, run jackd:
     2013/10/02 15:26:25 server started on port 2000
     ...
 
-To start the command-line tool (which is still *very* young):
+To start the commandline tool (which is still *very* young):
 
     $ jack-cli
     jack> set key123 val567
