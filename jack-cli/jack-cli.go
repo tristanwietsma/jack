@@ -131,9 +131,8 @@ func main() {
 				}(key)
 			}
 
-			fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>")
-
 			for {
+				fmt.Println("waiting.............")
 				fmt.Println(<-recv)
 			}
 

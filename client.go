@@ -83,26 +83,22 @@ type Connection struct {
 	feed chan string
 }
 
-func (sc *Connection) transmit(m *Message) error {
+func (sc *Connection) transmit(m *Message) {
 	b := m.Bytes()
 	_, err := sc.conn.Write(b)
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
 
-	fmt.Println("debug::: 93")
-
 	_, err = sc.conn.Read(buf)
 	if err != nil {
-		return err
+		panic(err)
 	}
-
-	fmt.Println("debug::: 100", buf)
 
 	end := bytes.IndexByte(buf, EOM)
 	if end < 0 {
 		err := ProtocolError{"Message is missing EOM byte."}
-		return err
+		panic(err)
 	}
 
 	payload := string(buf[:end])
@@ -117,37 +113,25 @@ WAIT_FOR_SERVER:
 
 func (sc *Connection) Get(key string) string {
 	m := NewGetMessage(key)
-	err := sc.transmit(m)
-	if err != nil {
-		panic(err)
-	}
+	go sc.transmit(m)
 	return <-sc.feed
 }
 
 func (sc *Connection) Set(key, value string) string {
 	m := NewSetMessage(key, value)
-	err := sc.transmit(m)
-	if err != nil {
-		panic(err)
-	}
+	go sc.transmit(m)
 	return <-sc.feed
 }
 
 func (sc *Connection) Delete(key string) string {
 	m := NewDeleteMessage(key)
-	err := sc.transmit(m)
-	if err != nil {
-		panic(err)
-	}
+	go sc.transmit(m)
 	return <-sc.feed
 }
 
 func (sc *Connection) Publish(key, value string) string {
 	m := NewPublishMessage(key, value)
-	err := sc.transmit(m)
-	if err != nil {
-		panic(err)
-	}
+	go sc.transmit(m)
 	return <-sc.feed
 }
 
@@ -171,6 +155,6 @@ func NewConnection(address string, port uint) (*Connection, error) {
 	if err == nil {
 		sc.conn = conn
 	}
-	sc.feed = make(chan string, 2)
+	sc.feed = make(chan string)
 	return &sc, err
 }
