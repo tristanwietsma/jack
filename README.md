@@ -6,7 +6,9 @@ JackDB (beta)
 What is JackDB?
 ---------------
 
-JackDB is a concurrent key-value server. It supports get, set, publish, subscribe, and delete. **That is it.** Five commands.
+JackDB is a concurrent key-value server. It supports get, set, publish, subscribe, and delete
+
+ **That is it.** Five commands.
 
 The underlying data structure is [MetaStore](https://github.com/tristanwietsma/metastore), which is an abstraction over a string map that divides the key-space into buckets for finer lock resolution.
 
