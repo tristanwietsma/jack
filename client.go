@@ -117,6 +117,7 @@ func (sc *Connection) Get(key string) string {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("here>>>>>>")
 	return <-(*sc).feed
 }
 
