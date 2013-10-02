@@ -87,8 +87,6 @@ func (sc *Connection) transmit(m *Message) error {
 	b := m.Bytes()
 	_, err := sc.conn.Write(b)
 
-	fmt.Println(">>>>>>>>>>>>>wrote bytes")
-
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
@@ -97,20 +95,14 @@ WAIT_FOR_SERVER:
 		return err
 	}
 
-	fmt.Println("read bytes>>>>>>>>>>>>>", buf)
-
 	end := bytes.IndexByte(buf, EOM)
 	if end < 0 {
 		err := ProtocolError{"Message is missing EOM byte."}
 		return err
 	}
 
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> before payload")
-
 	payload := string(buf[:end])
 	sc.feed <- payload
-
-	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<< after")
 
 	if m.cmd == SUB {
 		goto WAIT_FOR_SERVER
@@ -125,7 +117,6 @@ func (sc *Connection) Get(key string) string {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("here>>>>>>")
 	return <-sc.feed
 }
 
@@ -176,5 +167,6 @@ func NewConnection(address string, port uint) (*Connection, error) {
 	if err == nil {
 		sc.conn = conn
 	}
+	sc.feed = make(chan string)
 	return &sc, err
 }
