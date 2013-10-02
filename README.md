@@ -31,3 +31,17 @@ The project currently ships with the server, **jackd**, and a command line inter
     make
 
 The 'make' will build both  **jackd** and **jack-cli**, as well as move them to *$GOCODE/bin*.
+
+Usage
+-----
+
+To start the server, run jackd:
+
+    $ jackd
+    2013/10/02 15:26:25 created storage with 1000 buckets
+    2013/10/02 15:26:25 server started on port 2000
+
+To start the command-line tool (which is still *very* young:
+
+    $ jack-cli
+
