@@ -1,5 +1,5 @@
-JackDB (beta)
-=============
+JackDB
+======
 
 ![screenshot](https://raw.github.com/tristanwietsma/jackdb/master/docs/screenshot.png)
 
