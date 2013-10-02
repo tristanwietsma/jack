@@ -15,7 +15,7 @@ var address = flag.String("address", "127.0.0.1", "server address")
 var port = flag.Uint("port", 2000, "port number")
 var poolsize = flag.Uint("cmax", 100, "max connections")
 
-func ReadLine() []string {
+func readLine() []string {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		return strings.Split(scanner.Text(), " ")
@@ -44,11 +44,12 @@ func main() {
 	}()
 
 	cmdPrompt := "\033[34;1mjack " + *address + ":" + strconv.FormatUint(uint64(*port), 10)  +">\033[0m "
+	syntaxError := "\033[31;1mSyntaxError: %s\033[0m\n"
 
 	var tokens []string
 	for {
 		fmt.Print(cmdPrompt)
-		tokens = ReadLine()
+		tokens = readLine()
 
 		// handle empty string
 		if len(tokens) == 0 {
@@ -62,7 +63,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntaxError: GET key [key ...]\033[0m")
+				fmt.Printf(syntaxError, "GET key [key ...]")
 				continue
 			}
 
@@ -78,7 +79,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("\033[31;1mSyntaxError: SET key value\033[0m")
+				fmt.Printf(syntaxError, "SET key value")
 				continue
 			}
 
@@ -89,7 +90,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntaxError: DEL key [key ...]\033[0m")
+				fmt.Printf(syntaxError, "DEL key [key ...]")
 				continue
 			}
 
@@ -102,7 +103,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("\033[31;1mSyntaxError: PUB key value\033[0m")
+				fmt.Printf(syntaxError, "PUB key value")
 				continue
 			}
 
@@ -113,7 +114,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntaxError: SUB key [key ...]\033[0m")
+				fmt.Printf(syntaxError, "SUB key [key ...]")
 				continue
 			}
 
@@ -138,7 +139,7 @@ func main() {
 			}
 
 		default:
-			fmt.Printf("\033[31;1mUnknown command: %s\033[0m\n", cmd)
+			fmt.Printf(syntaxError, cmd)
 		}
 	}
 }
