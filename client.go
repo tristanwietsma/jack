@@ -17,8 +17,8 @@ limitations under the License.
 package jackdb
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 	"net"
 	"strconv"
 )
@@ -36,17 +36,17 @@ var MaxConnectionsError = ConnectionPoolError{"Maximum connections reached."}
 // ConnectionPool
 type ConnectionPool struct {
 	address string
-	port uint
-	size uint
-	count uint
-	free []*Connection
+	port    uint
+	size    uint
+	count   uint
+	free    []*Connection
 }
 
 func NewConnectionPool(address string, port, size uint) *ConnectionPool {
 	return &ConnectionPool{
 		address: address,
-		port: port,
-		size: size,
+		port:    port,
+		size:    size,
 	}
 }
 

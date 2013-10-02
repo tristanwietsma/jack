@@ -122,17 +122,13 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					ch := make(chan string)
-					c.Subscribe(key, ch)
-					for {
-						v := <-ch
-						recv <- k + ":\t" + v
-					}
+					fmt.Println("subscribed to %s", k)
+					c.Subscribe(k, recv)
 				}(key)
 			}
 
 			for {
-				fmt.Println("waiting.............")
+				fmt.Println("waiting on recv.............")
 				fmt.Println(<-recv)
 			}
 
