@@ -29,13 +29,14 @@ func StartServer(port uint, buckets uint) {
 	db.Init(buckets)
 	log.Printf("created storage with %d buckets\n", buckets)
 
-	portStr := ":" + strconv.FormatUint(uint64(port), 10)
-	listener, err := net.Listen("tcp", portStr)
+	// listening on localhost
+	addr := "127.0.0.1:" + strconv.FormatUint(uint64(port), 10)
+	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer listener.Close()
-	log.Printf("server started on port %d\n", port)
+	log.Printf("server listening on port %d\n", port)
 
 	for {
 		c, err := listener.Accept()

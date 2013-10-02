@@ -8,9 +8,10 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"strconv"
 )
 
-var address = flag.String("address", "0.0.0.0", "server address")
+var address = flag.String("address", "127.0.0.1", "server address")
 var port = flag.Uint("port", 2000, "port number")
 var poolsize = flag.Uint("cmax", 100, "max connections")
 
@@ -42,8 +43,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	cmdPrompt := "\033[34;1mjack>\033[0m "
-	respPrompt := "\033[33;1mjack>\033[0m "
+	cmdPrompt := "\033[34;1mjack " + *address + ":" + strconv.FormatUint(uint64(*port), 10)  +">\033[0m "
 
 	var tokens []string
 	for {
@@ -70,7 +70,7 @@ func main() {
 			for _, key := range tokens[1:] {
 				value := conn.Get(key)
 				if len(value) > 0 {
-					fmt.Printf(respPrompt + "%s := %s\n", key, value)
+					fmt.Printf("%s := %s\n", key, value)
 				}
 			}
 
@@ -83,7 +83,7 @@ func main() {
 			}
 
 			// set key
-			fmt.Println(respPrompt + conn.Set(tokens[1], tokens[2]))
+			fmt.Println(conn.Set(tokens[1], tokens[2]))
 
 		case "DEL":
 
@@ -95,7 +95,7 @@ func main() {
 
 			// delete each key
 			for _, key := range tokens[1:] {
-				fmt.Println(respPrompt + conn.Delete(key))
+				fmt.Println(conn.Delete(key))
 			}
 
 		case "PUB":
@@ -107,7 +107,7 @@ func main() {
 			}
 
 			// publish key
-			fmt.Println(respPrompt + conn.Publish(tokens[1], tokens[2]))
+			fmt.Println(conn.Publish(tokens[1], tokens[2]))
 
 		case "SUB":
 
@@ -134,7 +134,7 @@ func main() {
 			}
 
 			for {
-				fmt.Println(respPrompt + <-recv)
+				fmt.Println(<-recv)
 			}
 
 		default:
