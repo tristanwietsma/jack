@@ -167,6 +167,6 @@ func NewConnection(address string, port uint) (*Connection, error) {
 	if err == nil {
 		sc.conn = conn
 	}
-	sc.feed = make(chan string)
+	sc.feed = make(chan string, 2)
 	return &sc, err
 }
