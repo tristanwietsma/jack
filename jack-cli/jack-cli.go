@@ -42,9 +42,12 @@ func main() {
 		os.Exit(0)
 	}()
 
+	cmdPrompt := "\033[34;1mjack>\033[0m "
+	respPrompt := "\033[33;1mjack>\033[0m "
+
 	var tokens []string
 	for {
-		fmt.Print("\033[34;1mjack>\033[0m ")
+		fmt.Print(cmdPrompt)
 		tokens = ReadLine()
 
 		// handle empty string
@@ -59,7 +62,7 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntax: GET key [key ...]\033[0m")
+				fmt.Println("\033[31;1mSyntaxError: GET key [key ...]\033[0m")
 				continue
 			}
 
@@ -67,7 +70,7 @@ func main() {
 			for _, key := range tokens[1:] {
 				value := conn.Get(key)
 				if len(value) > 0 {
-					fmt.Printf("%s:\t%s\n", key, value)
+					fmt.Printf(respPrompt + "%s := %s\n", key, value)
 				}
 			}
 
@@ -75,42 +78,42 @@ func main() {
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("\033[31;1mSyntax: SET key value\033[0m")
+				fmt.Println("\033[31;1mSyntaxError: SET key value\033[0m")
 				continue
 			}
 
 			// set key
-			fmt.Println(conn.Set(tokens[1], tokens[2]))
+			fmt.Println(respPrompt + conn.Set(tokens[1], tokens[2]))
 
 		case "DEL":
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntax: DEL key [key ...]\033[0m")
+				fmt.Println("\033[31;1mSyntaxError: DEL key [key ...]\033[0m")
 				continue
 			}
 
 			// delete each key
 			for _, key := range tokens[1:] {
-				fmt.Println(conn.Delete(key))
+				fmt.Println(respPrompt + conn.Delete(key))
 			}
 
 		case "PUB":
 
 			// handle syntax error
 			if len(tokens) != 3 {
-				fmt.Println("\033[31;1mSyntax: PUB key value\033[0m")
+				fmt.Println("\033[31;1mSyntaxError: PUB key value\033[0m")
 				continue
 			}
 
 			// publish key
-			fmt.Println(conn.Publish(tokens[1], tokens[2]))
+			fmt.Println(respPrompt + conn.Publish(tokens[1], tokens[2]))
 
 		case "SUB":
 
 			// handle syntax error
 			if len(tokens) == 1 {
-				fmt.Println("\033[31;1mSyntax: SUB key [key ...]\033[0m")
+				fmt.Println("\033[31;1mSyntaxError: SUB key [key ...]\033[0m")
 				continue
 			}
 
@@ -122,12 +125,16 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					c.Subscribe(k, recv)
+					middle := make(chan string)
+					go c.Subscribe(k, middle)
+					for {
+						recv <- k + " := " + <-middle
+					}
 				}(key)
 			}
 
 			for {
-				fmt.Println(<-recv)
+				fmt.Println(respPrompt + <-recv)
 			}
 
 		default:
