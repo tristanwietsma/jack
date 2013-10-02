@@ -23,7 +23,12 @@ import (
 	"strconv"
 )
 
+// StartServer starts up a listened at 127.0.0.1:<port> with a key space distributed over a given number of buckets.
 func StartServer(port uint, buckets uint) {
+
+	if buckets == 0 {
+		log.Fatalf("<buckets> be positive. got %d.\n", buckets)
+	}
 
 	var db metastore.MetaStore
 	db.Init(buckets)
@@ -43,17 +48,17 @@ func StartServer(port uint, buckets uint) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		go HandleConnection(c, &db)
+		go handleConnection(c, &db)
 	}
 }
 
-func CloseConnection(c net.Conn) {
+func closeConnection(c net.Conn) {
 	log.Printf("[%s] closed connection\n", c.RemoteAddr())
 	c.Close()
 }
 
-func HandleConnection(c net.Conn, dbase *metastore.MetaStore) {
-	defer CloseConnection(c)
+func handleConnection(c net.Conn, dbase *metastore.MetaStore) {
+	defer closeConnection(c)
 
 	fromAddr := c.RemoteAddr()
 	log.Printf("[%s] new connection\n", fromAddr)
