@@ -87,6 +87,8 @@ func (sc *Connection) transmit(m *Message) error {
 	b := m.Bytes()
 	_, err := (*sc).conn.Write(b)
 
+	fmt.Println(">>>>>>>>>>>>>wrote bytes")
+
 	buf := make([]byte, 1024)
 
 WAIT_FOR_SERVER:
@@ -94,6 +96,8 @@ WAIT_FOR_SERVER:
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("read bytes>>>>>>>>>>>>>", buf)
 
 	end := bytes.IndexByte(buf, EOM)
 	if end < 0 {
