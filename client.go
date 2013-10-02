@@ -23,17 +23,17 @@ import (
 	"strconv"
 )
 
-type ConnectionPoolError struct {
+type connectionPoolError struct {
 	desc string
 }
 
-func (e ConnectionPoolError) Error() string {
-	return fmt.Sprintf("ConnectionPoolError: %s", e.desc)
+func (e connectionPoolError) Error() string {
+	return fmt.Sprintf("Connection Pool Error: %s", e.desc)
 }
 
-var MaxConnectionsError = ConnectionPoolError{"Maximum connections reached."}
+var maxConnectionsError = connectionPoolError{"Maximum connections reached."}
 
-// ConnectionPool
+// The ConnectionPool struct maintains a finite number of connections for use on client-side.
 type ConnectionPool struct {
 	address string
 	port    uint
@@ -42,6 +42,7 @@ type ConnectionPool struct {
 	free    []*Connection
 }
 
+// NewConnectionPool constructs a ConnectionPool for a given address, port number, and pool size.
 func NewConnectionPool(address string, port, size uint) *ConnectionPool {
 	return &ConnectionPool{
 		address: address,
@@ -54,7 +55,7 @@ func NewConnectionPool(address string, port, size uint) *ConnectionPool {
 func (cp *ConnectionPool) Connect() (*Connection, error) {
 
 	if cp.count == cp.size && len(cp.free) == 0 {
-		return nil, MaxConnectionsError
+		return nil, maxConnectionsError
 	}
 
 	if len(cp.free) > 0 {
@@ -77,7 +78,7 @@ func (cp *ConnectionPool) Free(c *Connection) error {
 	return nil
 }
 
-// Connection
+// The Connection struct defines an individual client connection.
 type Connection struct {
 	conn net.Conn
 	feed chan string
@@ -108,30 +109,35 @@ WAIT_FOR_SERVER:
 	}
 }
 
+// Get returns the value associated with a given key.
 func (sc *Connection) Get(key string) string {
 	m := NewGetMessage(key)
 	go sc.transmit(m)
 	return <-sc.feed
 }
 
+// Set assigns a value to a key.
 func (sc *Connection) Set(key, value string) string {
 	m := NewSetMessage(key, value)
 	go sc.transmit(m)
 	return <-sc.feed
 }
 
+// Delete removes a key-value pair from the database.
 func (sc *Connection) Delete(key string) string {
 	m := NewDeleteMessage(key)
 	go sc.transmit(m)
 	return <-sc.feed
 }
 
+// Publish sets a value to a key and triggers a subscriber update.
 func (sc *Connection) Publish(key, value string) string {
 	m := NewPublishMessage(key, value)
 	go sc.transmit(m)
 	return <-sc.feed
 }
 
+// Subscribe added a channel to the subscription list on a key.
 func (sc *Connection) Subscribe(key string, recv chan<- string) {
 	m := NewSubscribeMessage(key)
 	go sc.transmit(m)
@@ -140,11 +146,13 @@ func (sc *Connection) Subscribe(key string, recv chan<- string) {
 	}
 }
 
+// Close closes a connection.
 func (sc *Connection) Close() error {
 	err := sc.conn.Close()
 	return err
 }
 
+// NewConnection returns a connection to a given address and port number.
 func NewConnection(address string, port uint) (*Connection, error) {
 	fullAddress := address + ":" + strconv.FormatUint(uint64(port), 10)
 	conn, err := net.Dial("tcp", fullAddress)
