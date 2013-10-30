@@ -1,25 +1,23 @@
-JackDB
-======
+Jack
+====
 
-[![Build Status](https://travis-ci.org/tristanwietsma/jackdb.png?branch=master)](https://travis-ci.org/tristanwietsma/jackdb)
+[![Build Status](https://travis-ci.org/tristanwietsma/jack.png?branch=master)](https://travis-ci.org/tristanwietsma/jack)
 
-![screenshot](https://raw.github.com/tristanwietsma/jackdb/master/docs/screenshot.png)
+![screenshot](https://raw.github.com/tristanwietsma/jack/master/docs/screenshot.png)
 
-What is JackDB?
----------------
+What is Jack?
+-------------
 
-JackDB is a concurrent key-value server. It supports get, set, publish, subscribe, and delete
+Jack is a concurrent key-value server. It supports get, set, publish, subscribe, and delete
 
  **That is it.** Five commands.
 
 The underlying data structure is [MetaStore](https://github.com/tristanwietsma/metastore), which is an abstraction over a string map that divides the key-space into buckets for finer lock resolution.
 
-What isn't JackDB?
-------------------
+What isn't Jack?
+----------------
 
 Jack is not Redis. Jack isn't a fan of large APIs and does not support persistence.
-
-The project is currently in beta and should be considered volatile. Contributions are welcome.
 
 Installation
 ------------
@@ -27,11 +25,11 @@ Installation
 You can use the Go tool to install the library and dependencies:
 
     export GOPATH=<where you store your Go code>
-    go get -u github.com/tristanwietsma/jackdb
+    go get -u github.com/tristanwietsma/jack
 
 The project currently ships with the server, **jackd**, and a command line interface, **jack-cli**. Since the Go tool doesn't like multiple build targets in the same project, you need to build them separately:
 
-    cd $GOPATH/src/github.com/tristanwietsma/jackdb
+    cd $GOPATH/src/github.com/tristanwietsma/jack
     make
 
 The 'make' will build both  **jackd** and **jack-cli**, as well as move them to *$GOCODE/bin*.

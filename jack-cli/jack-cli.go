@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/tristanwietsma/jackdb"
+	"github.com/tristanwietsma/jack"
 	"os"
 	"os/signal"
 	"strings"
@@ -27,7 +27,7 @@ func main() {
 
 	flag.Parse()
 
-	pool := jackdb.NewConnectionPool(*address, *port, *poolsize)
+	pool := jack.NewConnectionPool(*address, *port, *poolsize)
 
 	conn, err := pool.Connect()
 	if err != nil {
