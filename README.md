@@ -1,23 +1,17 @@
 Jack
 ====
 
-[![Build Status](https://travis-ci.org/tristanwietsma/jack.png?branch=master)](https://travis-ci.org/tristanwietsma/jack)
+[![Build Status](https://travis-ci.org/tristanwietsma/jack.png?branch=master)](https://travis-ci.org/tristanwietsma/jack) [![GoDoc](https://godoc.org/github.com/tristanwietsma/jack?status.svg)](http://godoc.org/github.com/tristanwietsma/jack)
 
 ![screenshot](https://raw.github.com/tristanwietsma/jack/master/docs/screenshot.png)
 
 What is Jack?
 -------------
 
-Jack is a concurrent key-value server. It supports get, set, publish, subscribe, and delete
-
- **That is it.** Five commands.
+Jack is a proof-of-concept concurrent key-value server. It supports get, set, publish, subscribe, and delete
 
 The underlying data structure is [MetaStore](https://github.com/tristanwietsma/metastore), which is an abstraction over a string map that divides the key-space into buckets for finer lock resolution.
 
-What isn't Jack?
-----------------
-
-Jack is not Redis. Jack isn't a fan of large APIs and does not support persistence.
 
 Installation
 ------------
@@ -44,7 +38,7 @@ To start the server, run jackd:
     2013/10/02 15:26:25 server started on port 2000
     ...
 
-To start the commandline tool (which is still *very* young):
+To start the command-line tool:
 
     $ jack-cli
     jack> set key123 val567
