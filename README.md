@@ -40,6 +40,14 @@ To start the server, run jackd:
 
 To start the command-line tool:
 
+    jack > help
+      GET key [key ...]
+      SET key value
+      DEL key [key ...]
+      PUB key value
+      SUB key [key ...]
+      QUIT
+
     $ jack-cli
     jack> set key123 val567
     jack> 1

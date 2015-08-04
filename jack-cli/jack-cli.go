@@ -46,6 +46,7 @@ func main() {
 	cmdPrompt := "\033[34;1mjack " + *address + ":" + strconv.FormatUint(uint64(*port), 10)  +">\033[0m "
 	syntaxError := "\033[31;1mSyntaxError: %s\033[0m\n"
 
+        fmt.Printf("use help for more command.\n")
 	var tokens []string
 	for {
 		fmt.Print(cmdPrompt)
@@ -59,6 +60,13 @@ func main() {
 		cmd := strings.ToUpper(tokens[0])
 
 		switch cmd {
+                case "HELP":
+                        // help message for more command
+                        msgHelp := fmt.Sprintf("\tGET key [key ...]\n\tSET key value\n"+
+                                    "\tDEL key [key ...]\n\tPUB key value\n\tSUB key [key ...]\n"+
+                                    "\tQUIT")
+                        fmt.Println(msgHelp)
+
 		case "GET":
 
 			// handle syntax error
@@ -137,6 +145,17 @@ func main() {
 			for {
 				fmt.Println(<-recv)
 			}
+
+                case "QUIT":
+                     err := conn.Close();
+                     if err != nil {
+                        fmt.Printf("close error: %q", err)
+                     }
+                     os.Exit(0)
+
+                case "":
+                       // skip empty line
+                       continue
 
 		default:
 			fmt.Printf(syntaxError, cmd)
